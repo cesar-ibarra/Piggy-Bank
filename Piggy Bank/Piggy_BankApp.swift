@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct Piggy_BankApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+//            ContentView()
+            PiggyBankListView()
+                .modelContainer(for: PiggyBank.self)
         }
     }
 }
