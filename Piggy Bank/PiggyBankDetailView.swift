@@ -91,6 +91,9 @@ struct PiggyBankDetailView: View {
                 saveEditedCoin()
             }
         }
+        // MARK: - BANNER
+        AdMobBanner()
+            .frame(width: 320, height: 100)
     }
 
     private func addCoin() {

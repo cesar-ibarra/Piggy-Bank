@@ -65,6 +65,9 @@ struct PiggyBankListView: View {
             .sheet(isPresented: $showingAddPiggyBank) {
                 AddPiggyBankView()
             }
+            // MARK: - BANNER
+            AdMobBanner()
+                .frame(width: 320, height: 100)
         }
     }
     

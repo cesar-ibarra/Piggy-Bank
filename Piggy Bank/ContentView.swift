@@ -42,6 +42,9 @@ struct ContentView: View {
                     ContentUnavailableView("Goals", systemImage: "banknote", description: Text("No goal yet. Add one to get started!"))
                 }
             }
+            // MARK: - BANNER
+            AdMobBanner()
+                .frame(width: 320, height: 50)
         }
     }
 }
