@@ -33,12 +33,29 @@ struct PiggyBankListView: View {
                                     .frame(width: 50, height: 50)
                                     .foregroundColor(.blue)
                             }
-                            
-                            VStack(alignment: .leading) {
-                                Text(piggyBank.goalName)
-                                    .font(.headline)
-                                ProgressView(value: piggyBank.percentage)
+
+                            VStack(alignment: .leading, spacing: 4) {
+                                    Text(piggyBank.goalName)
+                                        .font(.headline)
+                                        .foregroundStyle(piggyBank.isCompleted ? .green : .primary)
+
+                                ProgressView(value: min(piggyBank.percentage, 1.0))
                                     .progressViewStyle(LinearProgressViewStyle())
+                                    .tint(piggyBank.isCompleted ? .green : .blue)
+
+                                let remaining = max(piggyBank.savingGoal - piggyBank.total, 0)
+
+                                if piggyBank.isCompleted {
+                                    Text("🎉 Goal achieved!")
+                                        .font(.caption)
+                                        .foregroundColor(.green)
+                                        .transition(.opacity)
+                                } else {
+                                    Text("💸 $\(remaining, specifier: "%.2f") left to reach your goal")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+
                                 Text("Savings: $\(piggyBank.total, specifier: "%.2f") / $\(piggyBank.savingGoal, specifier: "%.2f")")
                                     .font(.caption)
                             }

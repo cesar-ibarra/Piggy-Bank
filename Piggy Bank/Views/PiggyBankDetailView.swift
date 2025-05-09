@@ -9,13 +9,19 @@ import SwiftUI
 
 struct PiggyBankDetailView: View {
     @Bindable var piggyBank: PiggyBank
-    @State private var newCoin: String = ""
+    @State var newCoin: String = ""
     @State private var showAddAlert = false
-    @State private var editingCoin: CoinEntry?
-    @State private var editedAmount: String = ""
-    @State private var showEditAlert = false
-    
-    @State private var showGoalCompleteAlert = false
+    @State var editingCoin: CoinEntry?
+    @State var editedAmount: String = ""
+    @State var showEditAlert = false
+
+    @State var showGoalCompleteAlert = false
+
+    @State var editedDate: Date = Date()
+    @State private var showEditSheet = false
+
+    @State private var showImagePicker = false
+    @State private var selectedImage: UIImage? = nil
     
     var sortedCoins: [CoinEntry] {
         piggyBank.coins.sorted(by: { $0.date > $1.date })
@@ -23,30 +29,54 @@ struct PiggyBankDetailView: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            if let imageData = piggyBank.imageData, let uiImage = UIImage(data: imageData) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 100) // Reduce el tamaño de la imagen
-                    .clipShape(Circle())
+            ZStack(alignment: .bottomTrailing) {
+                if let imageData = piggyBank.imageData, let uiImage = UIImage(data: imageData) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 100)
+                        .clipShape(Circle())
+                } else {
+                    Image(systemName: "photo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 100)
+                        .clipShape(Circle())
+                }
+                Button {
+                    showImagePicker = true
+                } label: {
+                    Image(systemName: "pencil.circle.fill")
+                        .foregroundColor(.white)
+                        .padding(6)
+                        .background(Color.black.opacity(0.6))
+                        .clipShape(Circle())
+                }
+                .offset(x: -6, y: -6)
             }
             
             VStack(spacing: 4) { // Reduce espacio en los detalles
-                HStack {
+                ZStack {
                     Text(piggyBank.goalName)
                         .font(.title2)
                         .bold()
-                    
-                    if piggyBank.isCompleted {
-                        Text("Completed")
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.green.opacity(0.2))
-                            .foregroundColor(.black)
-                            .clipShape(Capsule())
-                            .transition(.opacity.combined(with: .scale))
-                            .animation(.spring(), value: piggyBank.isCompleted)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                        .onTapGesture {
+                            editedAmount = String(piggyBank.savingGoal)
+                            showEditAlert = true
+                        }
+
+                    HStack {
+                        Spacer()
+                        Button {
+                            editedAmount = String(piggyBank.savingGoal)
+                            showEditAlert = true
+                        } label: {
+                            Image(systemName: "pencil")
+                                .foregroundColor(.blue)
+                                .padding(.trailing, 4)
+                        }
                     }
                 }
                 
@@ -54,6 +84,19 @@ struct PiggyBankDetailView: View {
                     .progressViewStyle(LinearProgressViewStyle())
                     .frame(width: 200)
                 
+                let remaining = max(piggyBank.savingGoal - piggyBank.total, 0)
+
+                if piggyBank.isCompleted {
+                    Text("🎉 Goal achieved!")
+                        .font(.caption)
+                        .foregroundColor(.green)
+                        .transition(.opacity)
+                } else {
+                    Text("💸 $\(remaining, specifier: "%.2f") left to reach your goal")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
                 Text("Current Savings: $\(piggyBank.total, specifier: "%.2f") / $\(piggyBank.savingGoal, specifier: "%.2f")")
                     .font(.subheadline)
                     .foregroundColor(.gray)
@@ -79,7 +122,10 @@ struct PiggyBankDetailView: View {
                     .contentShape(Rectangle())
                     .onTapGesture {
                         if !piggyBank.isCompleted {
-                            startEditing(coin)
+                            editingCoin = coin
+                            editedAmount = String(coin.amount)
+                            editedDate = coin.date
+                            showEditSheet = true
                         }
                     }
                 }
@@ -106,13 +152,57 @@ struct PiggyBankDetailView: View {
                 addCoin()
             }
         }
-        .alert("Edit Amount", isPresented: $showEditAlert) {
-            TextField("Enter new amount", text: $editedAmount)
+        .alert("Edit Goal", isPresented: $showEditAlert) {
+            TextField("Goal name", text: $piggyBank.goalName)
+            TextField("Saving goal", text: $editedAmount)
                 .keyboardType(.decimalPad)
             Button("Cancel", role: .cancel) {}
             Button("Save") {
-                saveEditedCoin()
+                if let newGoal = Double(editedAmount) {
+                    piggyBank.savingGoal = newGoal
+                }
             }
+        }
+        .sheet(isPresented: $showEditSheet) {
+            NavigationStack {
+                Form {
+                    Section {
+                        HStack {
+                            Image(systemName: "dollarsign.circle")
+                                .foregroundColor(.blue)
+                            TextField("Amount", text: $editedAmount)
+                                .keyboardType(.decimalPad)
+                        }
+                    }
+
+                    Section {
+                        HStack {
+                            Image(systemName: "calendar")
+                                .foregroundColor(.blue)
+                            DatePicker("Date", selection: $editedDate, displayedComponents: .date)
+                                .labelsHidden()
+                        }
+                    }
+                }
+                .navigationTitle("Edit Savings Entry")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel", role: .cancel) {
+                            showEditSheet = false
+                        }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") {
+                            saveEditedCoin()
+                            showEditSheet = false
+                        }
+                        .disabled(editedAmount.isEmpty)
+                    }
+                }
+            }
+            .presentationDetents([.medium, .large])
+            .presentationCornerRadius(20)
         }
         .alert("🎉 Goal Complete!", isPresented: $showGoalCompleteAlert) {
             Button("Awesome!", role: .cancel) {}
@@ -122,39 +212,14 @@ struct PiggyBankDetailView: View {
         // MARK: - BANNER
         AdMobBanner()
             .frame(width: 320, height: 100)
-    }
-    
-    private func addCoin() {
-        if let amount = Double(newCoin), amount > 0 {
-            let newEntry = CoinEntry(amount: amount, date: Date())
-            piggyBank.coins.append(newEntry)
-            newCoin = ""
-            
-            if piggyBank.total >= piggyBank.savingGoal && !piggyBank.isCompleted {
-                piggyBank.isCompleted = true
-                showGoalCompleteAlert = true
-            }
+        // Image picker sheet and onChange for selected image
+        .sheet(isPresented: $showImagePicker) {
+            ImagePicker(selectedImage: $selectedImage)
         }
-    }
-    
-    private func deleteCoin(at offsets: IndexSet) {
-        for offset in offsets {
-            let coinToDelete = sortedCoins[offset]
-            if let realIndex = piggyBank.coins.firstIndex(where: { $0.date == coinToDelete.date }) {
-                piggyBank.coins.remove(at: realIndex)
+        .onChange(of: selectedImage) { oldValue, newValue in
+            if let image = newValue {
+                piggyBank.imageData = image.jpegData(compressionQuality: 0.8)
             }
-        }
-    }
-    
-    private func startEditing(_ coin: CoinEntry) {
-        editingCoin = coin
-        editedAmount = String(coin.amount)
-        showEditAlert = true
-    }
-    
-    private func saveEditedCoin() {
-        if let newAmount = Double(editedAmount), newAmount > 0, let index = piggyBank.coins.firstIndex(where: { $0.date == editingCoin?.date }) {
-            piggyBank.coins[index].amount = newAmount
         }
     }
 }
