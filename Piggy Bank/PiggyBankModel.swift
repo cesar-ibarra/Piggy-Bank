@@ -15,24 +15,24 @@ struct CoinEntry: Codable {
 
 @Model
 class PiggyBank {
-    @Attribute(.unique) var goalName: String
-    var savingGoal: Double
+    var goalName: String = ""
+    var savingGoal: Double = 0
     var coins: [CoinEntry] = []
-    var isCompleted: Bool
-    var createdAt: Date
-    var imageData: Data?
+    var isCompleted: Bool = false
+    var createdAt: Date = Date()
+    var imageData: Data? = nil
 
     @Transient
     var total: Double {
         return coins.reduce(0) { $0 + $1.amount }
     }
-    
+
     @Transient
     var percentage: Double {
         return savingGoal > 0 ? total / savingGoal : 0.0
     }
-    
-    init(goalName: String, savingGoal: Double, isCompleted: Bool, imageData: Data? = nil) {
+
+    init(goalName: String = "", savingGoal: Double = 0, isCompleted: Bool = false, imageData: Data? = nil) {
         self.goalName = goalName
         self.savingGoal = savingGoal
         self.isCompleted = isCompleted
