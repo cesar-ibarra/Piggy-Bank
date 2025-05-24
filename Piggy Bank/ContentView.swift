@@ -7,11 +7,14 @@
 
 import SwiftUI
 import SwiftData
+import StoreKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var piggyBanks: [PiggyBank]
     @State private var piggyBank: String = ""
+    
+    @StateObject var storeKit = StoreKitManager()
     
     var body: some View {
         NavigationStack {
@@ -43,9 +46,9 @@ struct ContentView: View {
                 }
             }
             // MARK: - BANNER
-            AdMobBanner()
-                .frame(width: 320, height: 50)
-        }
+            ForEach(storeKit.storeProducts) { product in
+                ValidatePurchasedForAds(storeKit: storeKit, product: product)
+            }        }
     }
 }
 

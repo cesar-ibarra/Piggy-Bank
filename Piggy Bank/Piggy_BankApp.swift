@@ -7,9 +7,15 @@
 
 import SwiftUI
 import SwiftData
+import GoogleMobileAds
 
 @main
 struct Piggy_BankApp: App {
+    
+    init() {
+        MobileAds.shared.start(completionHandler: nil)
+    }
+    
     var body: some Scene {
         WindowGroup {
 //            ContentView()

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct PiggyBankDetailView: View {
     @Bindable var piggyBank: PiggyBank
@@ -26,6 +27,8 @@ struct PiggyBankDetailView: View {
     var sortedCoins: [CoinEntry] {
         piggyBank.coins.sorted(by: { $0.date > $1.date })
     }
+    
+    @StateObject var storeKit = StoreKitManager()
     
     var body: some View {
         VStack(spacing: 8) {
@@ -210,8 +213,10 @@ struct PiggyBankDetailView: View {
             Text("You’ve reached your savings goal. Well done!")
         }
         // MARK: - BANNER
-        AdMobBanner()
-            .frame(width: 320, height: 100)
+        ForEach(storeKit.storeProducts) { product in
+            ValidatePurchasedForAds(storeKit: storeKit, product: product)
+        }
+        
         // Image picker sheet and onChange for selected image
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(selectedImage: $selectedImage)

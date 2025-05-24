@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3465E23F2DE27002004D777B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3465E23E2DE27002004D777B /* StoreKit.framework */; };
 		34AF303B2D8A64AB004F50B4 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 34AF303A2D8A64AB004F50B4 /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3430C0802D4722300037CE68 /* Piggy Bank.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Piggy Bank.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3465E23E2DE27002004D777B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -28,6 +30,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				34AF303B2D8A64AB004F50B4 /* GoogleMobileAds in Frameworks */,
+				3465E23F2DE27002004D777B /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +41,7 @@
 			isa = PBXGroup;
 			children = (
 				3430C0822D4722300037CE68 /* Piggy Bank */,
+				3465E23D2DE27002004D777B /* Frameworks */,
 				3430C0812D4722300037CE68 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +52,14 @@
 				3430C0802D4722300037CE68 /* Piggy Bank.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		3465E23D2DE27002004D777B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3465E23E2DE27002004D777B /* StoreKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

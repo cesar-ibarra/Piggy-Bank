@@ -7,13 +7,17 @@
 
 import SwiftUI
 import SwiftData
+import StoreKit
 
 struct PiggyBankListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var piggyBanks: [PiggyBank]
     
     @State private var showingAddPiggyBank = false
-
+    @State private var showingTipsView = false
+    
+    @StateObject var storeKit = StoreKitManager()
+    
     var body: some View {
         NavigationStack {
             List {
@@ -33,18 +37,18 @@ struct PiggyBankListView: View {
                                     .frame(width: 50, height: 50)
                                     .foregroundColor(.blue)
                             }
-
+                            
                             VStack(alignment: .leading, spacing: 4) {
-                                    Text(piggyBank.goalName)
-                                        .font(.headline)
-                                        .foregroundStyle(piggyBank.isCompleted ? .green : .primary)
-
+                                Text(piggyBank.goalName)
+                                    .font(.headline)
+                                    .foregroundStyle(piggyBank.isCompleted ? .green : .primary)
+                                
                                 ProgressView(value: min(piggyBank.percentage, 1.0))
                                     .progressViewStyle(LinearProgressViewStyle())
                                     .tint(piggyBank.isCompleted ? .green : .blue)
-
+                                
                                 let remaining = max(piggyBank.savingGoal - piggyBank.total, 0)
-
+                                
                                 if piggyBank.isCompleted {
                                     Text("🎉 Goal achieved!")
                                         .font(.caption)
@@ -55,7 +59,7 @@ struct PiggyBankListView: View {
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                 }
-
+                                
                                 Text("Savings: $\(piggyBank.total, specifier: "%.2f") / $\(piggyBank.savingGoal, specifier: "%.2f")")
                                     .font(.caption)
                             }
@@ -78,13 +82,38 @@ struct PiggyBankListView: View {
                         Image(systemName: "plus")
                     }
                 }
+                
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showingTipsView = true
+                    } label: {
+                        Image(systemName: "heart.fill")
+                    }
+                }
             }
             .sheet(isPresented: $showingAddPiggyBank) {
                 AddPiggyBankView()
             }
+            .overlay {
+                if showingTipsView {
+                    Color.black.opacity(0.8)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .onTapGesture {
+                            showingTipsView.toggle()
+                        }
+                    TipsView {
+                        showingTipsView.toggle()
+                    }
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
+            .animation(.spring(), value: showingTipsView)
+            
             // MARK: - BANNER
-            AdMobBanner()
-                .frame(width: 320, height: 100)
+            ForEach(storeKit.storeProducts) { product in
+                ValidatePurchasedForAds(storeKit: storeKit, product: product)
+            }
         }
     }
     
