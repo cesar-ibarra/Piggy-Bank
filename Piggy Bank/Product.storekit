@@ -20,8 +20,8 @@
       "internalID" : "36F926D5",
       "localizations" : [
         {
-          "description" : "Treat me to a cup of coffee",
-          "displayName" : "Buy me a coffee ☕️",
+          "description" : "Invite me to a cup of coffee ☕️",
+          "displayName" : "Buy me a coffee",
           "locale" : "en_US"
         }
       ],

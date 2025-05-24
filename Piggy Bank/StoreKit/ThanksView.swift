@@ -9,20 +9,10 @@ import SwiftUI
 
 struct ThanksView: View {
     
-    var didTapClose: () -> ()
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         VStack(spacing: 8) {
-            HStack {
-                Spacer()
-                Button(action: didTapClose) {
-                    Image(systemName: "xmark")
-                        .symbolVariant(.circle.fill)
-                        .font(.system(.largeTitle, design: .rounded).bold())
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(.gray, .gray.opacity(0.2))
-                }
-            }
             
             Text("Thank You 💕")
                 .font(.system(.title2, design: .rounded).bold())
@@ -41,5 +31,5 @@ struct ThanksView: View {
 }
 
 #Preview {
-    ThanksView{}
+    ThanksView()
 }
