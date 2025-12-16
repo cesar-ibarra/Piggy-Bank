@@ -87,7 +87,7 @@ struct PiggyBankListView: View {
                     Button {
                         showingTipsView = true
                     } label: {
-                        Image(systemName: "heart.fill")
+                        Text("Buy me a Coffee ☕️")
                     }
                 }
             }
