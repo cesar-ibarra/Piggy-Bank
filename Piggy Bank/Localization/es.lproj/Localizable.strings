@@ -36,7 +36,10 @@
 "goalComplete.button" = "¡Genial!";
 
 /* Support */
-"support.buyMeCoffee" = "Apoya la App ☕️";
+"support.title" = "¿Te está gustando la app? ☕️";
+"support.message" = "Si quieres, puedes invitarme un café para apoyar futuras actualizaciones.";
+"support.restore" = "Restaurar Compras";
+"support.thanks" = "Gracias";
 
 /* Common */
 "common.delete" = "Eliminar";

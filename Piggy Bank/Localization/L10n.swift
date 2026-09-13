@@ -66,6 +66,10 @@ enum L10n {
 
     enum Support {
         static let buyMeCoffee = String(localized: "support.buyMeCoffee")
+        static let title = String(localized: "support.title")
+        static let message = String(localized: "support.message")
+        static let restore = String(localized: "support.restore")
+        static let thanks = String(localized: "support.thanks")
     }
 
     enum Common {

@@ -18,6 +18,10 @@ struct PiggyBankListView: View {
 
     @StateObject var storeKit = StoreKitManager()
 
+    private var isPurchased: Bool {
+        !storeKit.purchasedCoffeeForMe.isEmpty
+    }
+
     var body: some View {
         NavigationStack {
             Group {
@@ -42,29 +46,19 @@ struct PiggyBankListView: View {
                     Button {
                         showingTipsView = true
                     } label: {
-                        Text(L10n.Support.buyMeCoffee)
-                            .font(.subheadline)
+                        Image(systemName: isPurchased ? "heart.fill" : "cup.and.saucer.fill")
+                            .foregroundStyle(isPurchased ? .pink : Color.accentColor)
+                    }
+                    .accessibilityLabel(isPurchased ? L10n.Support.thanks : L10n.Support.buyMeCoffee)
+                    .popover(isPresented: $showingTipsView) {
+                        TipsView(storeKit: storeKit)
+                            .presentationCompactAdaptation(.popover)
                     }
                 }
             }
             .sheet(isPresented: $showingAddPiggyBank) {
                 AddPiggyBankView()
             }
-            .overlay {
-                if showingTipsView {
-                    Color.black.opacity(0.8)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .onTapGesture {
-                            showingTipsView.toggle()
-                        }
-                    TipsView {
-                        showingTipsView.toggle()
-                    }
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                }
-            }
-            .animation(.spring(), value: showingTipsView)
 
             // MARK: - BANNER
             ForEach(storeKit.storeProducts) { product in

@@ -151,4 +151,11 @@ class StoreKitManager: ObservableObject {
         //as we only have one product type grouping .nonconsumable - we check if it belongs to the purchasedCourses which ran init()
         return purchasedCoffeeForMe.contains(product)
     }
+
+    /// Re-syncs with the App Store and refreshes entitlements — lets a user
+    /// who reinstalled the app or switched devices recover a past purchase.
+    func restorePurchases() async throws {
+        try await AppStore.sync()
+        await updateCustomerProductStatus()
+    }
 }
