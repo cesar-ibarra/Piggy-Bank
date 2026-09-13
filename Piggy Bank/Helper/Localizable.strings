@@ -1,0 +1,43 @@
+/* Navigation */
+"nav.piggyBanks" = "Alcancías";
+"nav.details" = "Detalles";
+"nav.newPiggyBank" = "Nueva Alcancía";
+
+/* List */
+"list.empty.title" = "Aún No Hay Metas";
+"list.empty.message" = "Agrega tu primera meta para empezar a ahorrar.";
+"list.remaining" = "Faltan %@ para tu meta";
+"list.completed" = "¡Meta alcanzada!";
+"list.savedOfGoal" = "%@ de %@";
+
+/* Add / Edit goal */
+"form.section.goal" = "Meta de Ahorro";
+"form.section.image" = "Imagen de Portada";
+"form.goalName" = "Nombre";
+"form.goalAmount" = "Monto de la Meta";
+"form.selectImage" = "Elegir una Foto";
+"form.changeImage" = "Cambiar Foto";
+"form.cancel" = "Cancelar";
+"form.save" = "Guardar";
+
+/* Detail */
+"detail.savingsHistory" = "Historial de Ahorros";
+"detail.addSavings" = "Agregar Ahorro";
+"detail.editEntry" = "Editar Registro";
+"detail.editGoal" = "Editar Meta";
+"detail.amount" = "Monto";
+"detail.date" = "Fecha";
+"detail.currentSavings" = "%@ de %@ ahorrado";
+"detail.noEntries" = "Aún no hay ahorros — ¡agrega tu primer monto!";
+
+/* Goal complete */
+"goalComplete.title" = "¡Meta Completada! 🎉";
+"goalComplete.message" = "Alcanzaste tu meta de ahorro. ¡Bien hecho!";
+"goalComplete.button" = "¡Genial!";
+
+/* Support */
+"support.buyMeCoffee" = "Apoya la App ☕️";
+
+/* Common */
+"common.delete" = "Eliminar";
+"common.edit" = "Editar";
