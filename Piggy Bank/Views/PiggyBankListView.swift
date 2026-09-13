@@ -11,83 +11,39 @@ import StoreKit
 
 struct PiggyBankListView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var piggyBanks: [PiggyBank]
-    
+    @Query(sort: \PiggyBank.createdAt, order: .reverse) private var piggyBanks: [PiggyBank]
+
     @State private var showingAddPiggyBank = false
     @State private var showingTipsView = false
-    
+
     @StateObject var storeKit = StoreKitManager()
-    
+
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(piggyBanks) { piggyBank in
-                    NavigationLink(destination: PiggyBankDetailView(piggyBank: piggyBank)) {
-                        HStack {
-                            if let imageData = piggyBank.imageData, let uiImage = UIImage(data: imageData) {
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 50, height: 50)
-                                    .clipShape(Circle())
-                            } else {
-                                Image(systemName: "banknote.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 50, height: 50)
-                                    .foregroundColor(.blue)
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(piggyBank.goalName)
-                                    .font(.headline)
-                                    .foregroundStyle(piggyBank.isCompleted ? .green : .primary)
-                                
-                                ProgressView(value: min(piggyBank.percentage, 1.0))
-                                    .progressViewStyle(LinearProgressViewStyle())
-                                    .tint(piggyBank.isCompleted ? .green : .blue)
-                                
-                                let remaining = max(piggyBank.savingGoal - piggyBank.total, 0)
-                                
-                                if piggyBank.isCompleted {
-                                    Text("🎉 Goal achieved!")
-                                        .font(.caption)
-                                        .foregroundColor(.green)
-                                        .transition(.opacity)
-                                } else {
-                                    Text("💸 $\(remaining, specifier: "%.2f") left to reach your goal")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                
-                                Text("Savings: $\(piggyBank.total, specifier: "%.2f") / $\(piggyBank.savingGoal, specifier: "%.2f")")
-                                    .font(.caption)
-                            }
-                        }
-                    }
-                }
-                .onDelete(perform: deletePiggyBank)
-            }
-            .overlay {
+            Group {
                 if piggyBanks.isEmpty {
-                    ContentUnavailableView("Goals", systemImage: "banknote", description: Text("No goal yet. Add one to get started!"))
+                    emptyState
+                } else {
+                    list
                 }
             }
-            .navigationTitle("Piggy Banks")
+            .navigationTitle(L10n.Nav.piggyBanks)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showingAddPiggyBank = true
                     } label: {
-                        Image(systemName: "plus")
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
                     }
                 }
-                
+
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         showingTipsView = true
                     } label: {
-                        Text("Buy me a Coffee ☕️")
+                        Text(L10n.Support.buyMeCoffee)
+                            .font(.subheadline)
                     }
                 }
             }
@@ -109,22 +65,53 @@ struct PiggyBankListView: View {
                 }
             }
             .animation(.spring(), value: showingTipsView)
-            
+
             // MARK: - BANNER
             ForEach(storeKit.storeProducts) { product in
                 ValidatePurchasedForAds(storeKit: storeKit, product: product)
             }
         }
     }
-    
-    private func deletePiggyBank(at offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(piggyBanks[index])
+
+    private var list: some View {
+        List {
+            ForEach(piggyBanks) { piggyBank in
+                NavigationLink(destination: PiggyBankDetailView(piggyBank: piggyBank)) {
+                    PiggyBankRowView(piggyBank: piggyBank)
+                }
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        delete(piggyBank)
+                    } label: {
+                        Label(L10n.Common.delete, systemImage: "trash")
+                    }
+                }
+            }
+        }
+        .listStyle(.plain)
+        .background(Color(.systemGroupedBackground))
+        .scrollContentBackground(.hidden)
+    }
+
+    private var emptyState: some View {
+        ContentUnavailableView(
+            L10n.List.emptyTitle,
+            systemImage: "banknote",
+            description: Text(L10n.List.emptyMessage)
+        )
+    }
+
+    private func delete(_ piggyBank: PiggyBank) {
+        withAnimation {
+            modelContext.delete(piggyBank)
         }
     }
 }
 
 #Preview {
     PiggyBankListView()
-        .modelContainer(for: PiggyBank.self, inMemory: true)
+        .modelContainer(PersistenceController.preview)
 }

@@ -18,9 +18,8 @@ struct Piggy_BankApp: App {
     
     var body: some Scene {
         WindowGroup {
-//            ContentView()
             PiggyBankListView()
-                .modelContainer(for: PiggyBank.self)
+                .modelContainer(PersistenceController.shared)
         }
     }
 }

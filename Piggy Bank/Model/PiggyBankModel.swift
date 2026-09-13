@@ -9,8 +9,8 @@ import SwiftData
 import Foundation
 
 struct CoinEntry: Codable {
-    var amount: Double
-    var date: Date
+    var amount: Double = 0.0
+    var date: Date = Date()
 }
 
 @Model

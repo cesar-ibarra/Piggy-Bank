@@ -1,7 +1,43 @@
-/* 
-  Localizable.strings
-  Piggy Bank
+/* Navigation */
+"nav.piggyBanks" = "Piggy Banks";
+"nav.details" = "Details";
+"nav.newPiggyBank" = "New Piggy Bank";
 
-  Created by Cesar Ibarra on 9/11/26.
-  
-*/
+/* List */
+"list.empty.title" = "No Goals Yet";
+"list.empty.message" = "Add your first goal to start saving.";
+"list.remaining" = "%@ left to reach your goal";
+"list.completed" = "Goal achieved!";
+"list.savedOfGoal" = "%@ of %@";
+
+/* Add / Edit goal */
+"form.section.goal" = "Savings Goal";
+"form.section.image" = "Cover Image";
+"form.goalName" = "Name";
+"form.goalAmount" = "Goal Amount";
+"form.selectImage" = "Choose a Photo";
+"form.changeImage" = "Change Photo";
+"form.cancel" = "Cancel";
+"form.save" = "Save";
+
+/* Detail */
+"detail.savingsHistory" = "Savings History";
+"detail.addSavings" = "Add Savings";
+"detail.editEntry" = "Edit Entry";
+"detail.editGoal" = "Edit Goal";
+"detail.amount" = "Amount";
+"detail.date" = "Date";
+"detail.currentSavings" = "%@ of %@ saved";
+"detail.noEntries" = "No savings yet — add your first amount!";
+
+/* Goal complete */
+"goalComplete.title" = "Goal Complete! 🎉";
+"goalComplete.message" = "You've reached your savings goal. Well done!";
+"goalComplete.button" = "Awesome!";
+
+/* Support */
+"support.buyMeCoffee" = "Support the App ☕️";
+
+/* Common */
+"common.delete" = "Delete";
+"common.edit" = "Edit";

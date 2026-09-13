@@ -55,6 +55,11 @@ extension Double {
     var toWeight: String {
         String(format: "%.1f lbs", self)
     }
+
+    /// Formats the value as localized currency, e.g. "$120.00" or "120,00 €".
+    var currencyFormatted: String {
+        self.formatted(.currency(code: Locale.current.currency?.identifier ?? "USD"))
+    }
 }
 
 extension Date {
